@@ -1,0 +1,31 @@
+# Agent Manifest — AgentRegistry entry point
+# AgentRegistry reads all discovery and compile-time keys at the root level.
+id: "FIN-C2-113"
+name: "FinRegulationResearchComplianceReportAgent"
+namespace: "fin"
+version: "1.0.0"
+enabled: true
+category: "Cat 2"
+generation_mode: "llm"
+industry: "FIN"
+
+# Opaque compatibility metadata.
+base_type: "DocGenerationAgent"
+
+# Entry point — single dotted import path (module.Class).
+class: "src.graph.graph.Graph"
+
+# Security
+required_trust_level: "VERIFIED_EXTERNAL"
+
+# Compile-time gates. These keys are required by unguarded secret-provider
+# calls in src/services/llm_client.py; the configured provider is Anthropic.
+requires:
+  secrets:
+    - ANTHROPIC_API_KEY
+    - OPENAI_API_KEY
+    - AWS_ACCESS_KEY_ID
+    - AWS_SECRET_ACCESS_KEY
+    - AWS_REGION
+  extras:
+    - anthropic

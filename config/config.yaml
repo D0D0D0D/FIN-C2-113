@@ -1,0 +1,56 @@
+# Runtime parameters — loaded by AgentRegistry and the standalone API adapter,
+# then passed to Graph(config=...).
+
+max_retry: 3
+timeout_seconds: 30
+
+# HITL (D6 draft-review refine loop — docs/02_design.md §HITL).
+# memory_enabled MUST be true whenever hitl.enabled is true (checkpointer
+# is mandatory for interrupt() pause/resume).
+# The refine loop is human-gated (every round needs explicit "correct"
+# feedback) and therefore has no template-side round cap.
+memory_enabled: true
+hitl:
+  enabled: true
+  max_hitl: 8
+
+# LLM (built lazily by src/services/llm_client.build_llm — injection seam)
+llm_provider: "anthropic"
+llm_model: "claude-sonnet-5"
+
+# Live-fetch settings
+fetch_timeout_seconds: 20
+# Default regulator source registry. Users may add or override entries here.
+sources:
+  FSA:
+    name: "金融庁 (Financial Services Agency)"
+    url: "https://www.fsa.go.jp/news/index.html"
+  BOJ:
+    name: "日本銀行 (Bank of Japan)"
+    url: "https://www.boj.or.jp/whatsnew/index.htm"
+  Basel:
+    name: "Basel Committee on Banking Supervision (BIS)"
+    url: "https://www.bis.org/bcbs/publications.htm"
+  SEC:
+    name: "U.S. Securities and Exchange Commission"
+    url: "https://www.sec.gov/rules-regulations"
+  APRA:
+    name: "Australian Prudential Regulation Authority"
+    url: "https://www.apra.gov.au/news-and-publications"
+
+# S-3 output-gate pattern data. The gate logic remains in
+# src/nodes/post_process_node.py; these lists are user-tunable.
+s3_confidential_markers:
+  - "社外秘"
+  - "部外秘"
+  - "取扱注意"
+  - "未公表"
+  - "非公開資料"
+  - "draft - not for publication"
+  - "confidential"
+  - "internal use only"
+s3_legal_advice_phrases:
+  - "法的に問題ありません"
+  - "違法ではありません"
+  - "適法です"
+  - "法的リスクはありません"
